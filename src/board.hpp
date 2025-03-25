@@ -20,6 +20,7 @@ enum PieceColor {
 struct Piece
 {
     uint64_t bitboard = 0;
+    uint64_t firstMoveBitboard = 0;
     PieceType type;
     PieceColor color;
 
@@ -28,6 +29,10 @@ struct Piece
 
 std::array<Piece, 12> InitBoard();
 
-uint64_t LegalMoves(uint64_t bitboard, PieceType type, PieceColor color);
+uint64_t PossibleMoves(uint64_t bitboard, const Piece& piece);
 
 std::array<uint8_t, 2> PositionFromBitboard(uint64_t bitboard);
+
+uint64_t AllPiecesBitboard(const std::array<Piece, 12>& pieces);
+
+uint64_t LegalMoves(uint64_t possibleMovesBitboard, uint64_t allPiecesBitboard);

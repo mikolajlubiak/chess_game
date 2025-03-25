@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 #include <raylib.h>
 #include "board.hpp"
+#include "helper.hpp"
 
 int main()
 {
@@ -12,6 +13,7 @@ int main()
     std::array<Piece, 12> pieces = InitBoard();
     uint64_t legalMoves = 0;
 
+    uint64_t allPiecesBitboard = AllPiecesBitboard(pieces);
     uint64_t selectedBitboard = 0;
     Piece *selectedPiece = nullptr;
 
@@ -39,20 +41,19 @@ int main()
                     if (selectedBitboard & piece.bitboard)
                     {
                         selectedPiece = &piece;
-                        legalMoves = LegalMoves(selectedBitboard, piece.type, piece.color);
+                        uint64_t possibleMoves = PossibleMoves(selectedBitboard, piece);
+                        legalMoves = LegalMoves(possibleMoves, allPiecesBitboard);
                     }
                 }
             }
             else
             {
-                // Check if click is within board bounds
-                if (file >= 0 && file < 8 && rank >= 0 && rank < 8)
+                uint64_t newPosition = (uint64_t)1 << (rank * 8 + file);
+                if (file >= 0 && file < 8 && rank >= 0 && rank < 8 && newPosition & legalMoves)
                 {
-                    // Calculate new position's bitboard
-                    uint64_t newPosition = (uint64_t)1 << (rank * 8 + file);
-
-                    // Update piece position
                     selectedPiece->bitboard = (selectedPiece->bitboard & ~selectedBitboard) | newPosition;
+                    selectedPiece->firstMoveBitboard = (selectedPiece->firstMoveBitboard & ~selectedBitboard);
+                    allPiecesBitboard = AllPiecesBitboard(pieces);
                 }
 
                 selectedPiece = nullptr;

@@ -4,6 +4,7 @@ std::array<Piece, 12> InitBoard()
 {
     Piece blackPawn;
     blackPawn.bitboard = (uint64_t)1 << 8 | (uint64_t)1 << 9 | (uint64_t)1 << 10 | (uint64_t)1 << 11 | (uint64_t)1 << 12 | (uint64_t)1 << 13 | (uint64_t)1 << 14 | (uint64_t)1 << 15;
+    blackPawn.firstMoveBitboard = blackPawn.bitboard;
     blackPawn.type = PieceType::Pawn;
     blackPawn.color = PieceColor::Black;
     blackPawn.texture = LoadTexture("../assets/pieces/bP.svg.png");
@@ -40,6 +41,7 @@ std::array<Piece, 12> InitBoard()
 
     Piece whitePawn;
     whitePawn.bitboard = (uint64_t)1 << 48 | (uint64_t)1 << 49 | (uint64_t)1 << 50 | (uint64_t)1 << 51 | (uint64_t)1 << 52 | (uint64_t)1 << 53 | (uint64_t)1 << 54 | (uint64_t)1 << 55;
+    whitePawn.firstMoveBitboard = whitePawn.bitboard;
     whitePawn.type = PieceType::Pawn;
     whitePawn.color = PieceColor::White;
     whitePawn.texture = LoadTexture("../assets/pieces/wP.svg.png");
@@ -77,15 +79,29 @@ std::array<Piece, 12> InitBoard()
     return {blackPawn, blackRook, blackKnight, blackBishop, blackQueen, blackKing, whitePawn, whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing};
 }
 
-uint64_t LegalMoves(uint64_t bitboard, PieceType type, PieceColor color)
+uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece)
 {
     uint64_t legalMoves = 0;
     std::array<uint8_t, 2> position = PositionFromBitboard(bitboard);
 
-    switch (type)
+    switch (piece.type)
     {
     case PieceType::Pawn:
-        if (color == PieceColor::White)
+        if (bitboard & piece.firstMoveBitboard)
+        {
+            if (piece.color == PieceColor::White)
+            {
+                position[1]--;
+            }
+            else
+            {
+                position[1]++;
+            }
+
+            legalMoves = (uint64_t)1 << (position[1] * 8 + position[0]);
+        }
+
+        if (piece.color == PieceColor::White)
         {
             position[1]--;
         }
@@ -94,8 +110,17 @@ uint64_t LegalMoves(uint64_t bitboard, PieceType type, PieceColor color)
             position[1]++;
         }
 
-        legalMoves = (uint64_t)1 << (position[1] * 8 + position[0]);
+        legalMoves |= (uint64_t)1 << (position[1] * 8 + position[0]);
         break;
+    case PieceType::Rook:
+        for (uint8_t rank = 0; rank < 8; rank++)
+        {
+            legalMoves |= (uint64_t)1 << (position[1] * 8 + rank);
+        }
+        for (uint8_t file = 0; file < 8; file++)
+        {
+            legalMoves |= (uint64_t)1 << (file * 8 + position[0]);
+        }
 
     default:
         break;
@@ -116,5 +141,21 @@ std::array<uint8_t, 2> PositionFromBitboard(uint64_t bitboard)
             }
         }
     }
+
     return {0, 0};
+}
+
+uint64_t AllPiecesBitboard(const std::array<Piece, 12>& pieces) {
+    uint64_t bitboard = 0;
+
+    for (const Piece &piece : pieces)
+    {
+        bitboard |= piece.bitboard;
+    }
+
+    return bitboard;
+}
+
+uint64_t LegalMoves(uint64_t possibleMovesBitboard, uint64_t allPiecesBitboard) {
+    return possibleMovesBitboard & ~allPiecesBitboard;
 }
