@@ -29,9 +29,9 @@ struct Piece
 
 std::array<Piece, 12> InitBoard();
 
-uint64_t PossibleMoves(uint64_t bitboard, const Piece& piece);
+uint64_t PossibleMoves(uint64_t bitboard, const Piece& piece, uint64_t allPiecesBitboard);
 
-std::array<uint8_t, 2> PositionFromBitboard(uint64_t bitboard);
+std::array<int8_t, 2> PositionFromBitboard(uint64_t bitboard);
 
 uint64_t AllPiecesBitboard(const std::array<Piece, 12>& pieces);
 
