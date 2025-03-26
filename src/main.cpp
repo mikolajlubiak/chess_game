@@ -40,12 +40,19 @@ int main() {
             uint64_t possibleMoves =
                 PossibleMoves(selectedBitboard, piece, allPiecesBitboard);
             legalMoves = LegalMoves(possibleMoves, allPiecesBitboard);
+            legalMoves |= PossibleCaptures(selectedBitboard, piece, pieces);
           }
         }
       } else {
         uint64_t newPosition = 1ULL << (rank * 8 + file);
         if (file >= 0 && file < 8 && rank >= 0 && rank < 8 &&
             newPosition & legalMoves) {
+          for (Piece &piece : pieces) {
+            if (piece.bitboard & newPosition) {
+              piece.bitboard = piece.bitboard & ~newPosition;
+            }
+          }
+
           selectedPiece->bitboard =
               (selectedPiece->bitboard & ~selectedBitboard) | newPosition;
           selectedPiece->firstMoveBitboard =

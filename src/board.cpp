@@ -85,7 +85,7 @@ std::array<Piece, 12> InitBoard() {
 
 uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
                        uint64_t allPiecesBitboard) {
-  uint64_t legalMoves = 0;
+  uint64_t possibleMoves = 0;
   std::array<int8_t, 2> position = PositionFromBitboard(bitboard);
 
   int8_t rank = position[1];
@@ -99,10 +99,10 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
     }
 
     if (1ULL << (rank * 8 + file) & allPiecesBitboard) {
-      return legalMoves;
+      return possibleMoves;
     }
 
-    legalMoves |= 1ULL << (rank * 8 + file);
+    possibleMoves |= 1ULL << (rank * 8 + file);
 
     if (bitboard & piece.firstMoveBitboard) {
       if (piece.color == PieceColor::White) {
@@ -112,10 +112,10 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
       }
 
       if (1ULL << (rank * 8 + file) & allPiecesBitboard) {
-        return legalMoves;
+        return possibleMoves;
       }
 
-      legalMoves |= 1ULL << (rank * 8 + file);
+      possibleMoves |= 1ULL << (rank * 8 + file);
     }
   } else if (piece.type == PieceType::Rook) {
     for (file = position[0] + 1; file < 8; file++) {
@@ -127,7 +127,7 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
         break;
       }
 
-      legalMoves |= 1ULL << (position[1] * 8 + file);
+      possibleMoves |= 1ULL << (position[1] * 8 + file);
     }
 
     for (file = position[0] - 1; file >= 0; file--) {
@@ -139,7 +139,7 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
         break;
       }
 
-      legalMoves |= 1ULL << (position[1] * 8 + file);
+      possibleMoves |= 1ULL << (position[1] * 8 + file);
     }
 
     for (rank = position[1] - 1; rank >= 0; rank--) {
@@ -151,7 +151,7 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
         break;
       }
 
-      legalMoves |= 1ULL << (rank * 8 + position[0]);
+      possibleMoves |= 1ULL << (rank * 8 + position[0]);
     }
 
     for (rank = position[1] + 1; rank < 8; rank++) {
@@ -163,40 +163,40 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
         break;
       }
 
-      legalMoves |= 1ULL << (rank * 8 + position[0]);
+      possibleMoves |= 1ULL << (rank * 8 + position[0]);
     }
 
   } else if (piece.type == PieceType::Knight) {
     if (file + 2 < 8 && rank + 1 < 8) {
-      legalMoves |= 1ULL << ((rank + 1) * 8 + file + 2);
+      possibleMoves |= 1ULL << ((rank + 1) * 8 + file + 2);
     }
 
     if (file - 2 >= 0 && rank + 1 < 8) {
-      legalMoves |= 1ULL << ((rank + 1) * 8 + file - 2);
+      possibleMoves |= 1ULL << ((rank + 1) * 8 + file - 2);
     }
 
     if (file + 2 < 8 && rank - 1 >= 0) {
-      legalMoves |= 1ULL << ((rank - 1) * 8 + file + 2);
+      possibleMoves |= 1ULL << ((rank - 1) * 8 + file + 2);
     }
 
     if (file - 2 >= 0 && rank - 1 >= 0) {
-      legalMoves |= 1ULL << ((rank - 1) * 8 + file - 2);
+      possibleMoves |= 1ULL << ((rank - 1) * 8 + file - 2);
     }
 
     if (file + 1 < 8 && rank + 2 < 8) {
-      legalMoves |= 1ULL << ((rank + 2) * 8 + file + 1);
+      possibleMoves |= 1ULL << ((rank + 2) * 8 + file + 1);
     }
 
     if (file + 1 < 8 && rank - 2 >= 0) {
-      legalMoves |= 1ULL << ((rank - 2) * 8 + file + 1);
+      possibleMoves |= 1ULL << ((rank - 2) * 8 + file + 1);
     }
 
     if (file - 1 >= 0 && rank + 2 < 8) {
-      legalMoves |= 1ULL << ((rank + 2) * 8 + file - 1);
+      possibleMoves |= 1ULL << ((rank + 2) * 8 + file - 1);
     }
 
     if (file - 1 >= 0 && rank - 2 >= 0) {
-      legalMoves |= 1ULL << ((rank - 2) * 8 + file - 1);
+      possibleMoves |= 1ULL << ((rank - 2) * 8 + file - 1);
     }
   } else if (piece.type == PieceType::Bishop) {
     rank = position[1] + 1;
@@ -209,7 +209,7 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
         break;
       }
 
-      legalMoves |= 1ULL << (rank * 8 + file);
+      possibleMoves |= 1ULL << (rank * 8 + file);
 
       rank++;
       file++;
@@ -225,7 +225,7 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
         break;
       }
 
-      legalMoves |= 1ULL << (rank * 8 + file);
+      possibleMoves |= 1ULL << (rank * 8 + file);
 
       rank++;
       file--;
@@ -241,7 +241,7 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
         break;
       }
 
-      legalMoves |= 1ULL << (rank * 8 + file);
+      possibleMoves |= 1ULL << (rank * 8 + file);
 
       rank--;
       file++;
@@ -257,7 +257,7 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
         break;
       }
 
-      legalMoves |= 1ULL << (rank * 8 + file);
+      possibleMoves |= 1ULL << (rank * 8 + file);
 
       rank--;
       file--;
@@ -275,7 +275,7 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
         break;
       }
 
-      legalMoves |= 1ULL << (rank * 8 + file);
+      possibleMoves |= 1ULL << (rank * 8 + file);
 
       rank++;
       file++;
@@ -291,7 +291,7 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
         break;
       }
 
-      legalMoves |= 1ULL << (rank * 8 + file);
+      possibleMoves |= 1ULL << (rank * 8 + file);
 
       rank++;
       file--;
@@ -307,7 +307,7 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
         break;
       }
 
-      legalMoves |= 1ULL << (rank * 8 + file);
+      possibleMoves |= 1ULL << (rank * 8 + file);
 
       rank--;
       file++;
@@ -323,7 +323,7 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
         break;
       }
 
-      legalMoves |= 1ULL << (rank * 8 + file);
+      possibleMoves |= 1ULL << (rank * 8 + file);
 
       rank--;
       file--;
@@ -338,7 +338,7 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
         break;
       }
 
-      legalMoves |= 1ULL << (position[1] * 8 + file);
+      possibleMoves |= 1ULL << (position[1] * 8 + file);
     }
 
     for (file = position[0] - 1; file >= 0; file--) {
@@ -350,7 +350,7 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
         break;
       }
 
-      legalMoves |= 1ULL << (position[1] * 8 + file);
+      possibleMoves |= 1ULL << (position[1] * 8 + file);
     }
 
     for (rank = position[1] - 1; rank >= 0; rank--) {
@@ -362,7 +362,7 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
         break;
       }
 
-      legalMoves |= 1ULL << (rank * 8 + position[0]);
+      possibleMoves |= 1ULL << (rank * 8 + position[0]);
     }
 
     for (rank = position[1] + 1; rank < 8; rank++) {
@@ -374,43 +374,43 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
         break;
       }
 
-      legalMoves |= 1ULL << (rank * 8 + position[0]);
+      possibleMoves |= 1ULL << (rank * 8 + position[0]);
     }
   } else if (piece.type == PieceType::King) {
     if (file + 1 < 8) {
-      legalMoves |= 1ULL << (rank * 8 + file + 1);
+      possibleMoves |= 1ULL << (rank * 8 + file + 1);
     }
 
     if (rank + 1 < 8) {
-      legalMoves |= 1ULL << ((rank + 1) * 8 + file);
+      possibleMoves |= 1ULL << ((rank + 1) * 8 + file);
     }
 
     if (file + 1 < 8 && rank + 1 < 8) {
-      legalMoves |= 1ULL << ((rank + 1) * 8 + file + 1);
+      possibleMoves |= 1ULL << ((rank + 1) * 8 + file + 1);
     }
 
     if (file - 1 >= 0) {
-      legalMoves |= 1ULL << (rank * 8 + file - 1);
+      possibleMoves |= 1ULL << (rank * 8 + file - 1);
     }
 
     if (rank - 1 >= 0) {
-      legalMoves |= 1ULL << ((rank - 1) * 8 + file);
+      possibleMoves |= 1ULL << ((rank - 1) * 8 + file);
     }
 
     if (rank - 1 >= 0 && file - 1 >= 0) {
-      legalMoves |= 1ULL << ((rank - 1) * 8 + file - 1);
+      possibleMoves |= 1ULL << ((rank - 1) * 8 + file - 1);
     }
 
     if (rank + 1 < 8 && file - 1 >= 0) {
-      legalMoves |= 1ULL << ((rank + 1) * 8 + file - 1);
+      possibleMoves |= 1ULL << ((rank + 1) * 8 + file - 1);
     }
 
     if (rank - 1 >= 0 && file + 1 < 8) {
-      legalMoves |= 1ULL << ((rank - 1) * 8 + file + 1);
+      possibleMoves |= 1ULL << ((rank - 1) * 8 + file + 1);
     }
   }
 
-  return legalMoves;
+  return possibleMoves;
 }
 
 std::array<int8_t, 2> PositionFromBitboard(uint64_t bitboard) {
@@ -438,4 +438,349 @@ uint64_t AllPiecesBitboard(const std::array<Piece, 12> &pieces) {
 uint64_t LegalMoves(uint64_t possibleMovesBitboard,
                     uint64_t allPiecesBitboard) {
   return possibleMovesBitboard & ~allPiecesBitboard;
+}
+
+uint64_t PossibleCaptures(uint64_t bitboard, const Piece &piece,
+                          const std::array<Piece, 12> &pieces) {
+  uint64_t possibleCaptures = 0;
+  std::array<int8_t, 2> position = PositionFromBitboard(bitboard);
+  uint64_t allPiecesBitboard = AllPiecesBitboard(pieces);
+
+  int8_t rank = position[1];
+  int8_t file = position[0];
+
+  if (piece.type == PieceType::Pawn) {
+    if (piece.color == PieceColor::White) {
+      if (rank - 1 >= 0) {
+        rank--;
+      }
+    } else {
+      if (rank + 1 < 8) {
+        rank++;
+      }
+    }
+
+    if (rank == position[1]) {
+      return possibleCaptures;
+    }
+
+    if (file - 1 >= 0) {
+      file--;
+    }
+
+    if (1ULL << (rank * 8 + file) & allPiecesBitboard) {
+      for (const Piece &otherPiece : pieces) {
+        if (1ULL << (rank * 8 + file) & otherPiece.bitboard &&
+            piece.color != otherPiece.color) {
+          possibleCaptures |= 1ULL << (rank * 8 + file);
+        }
+      }
+    }
+
+    if (file + 2 < 8) {
+      file += 2;
+    }
+
+    if (1ULL << (rank * 8 + file) & allPiecesBitboard) {
+      for (const Piece &otherPiece : pieces) {
+        if (1ULL << (rank * 8 + file) & otherPiece.bitboard &&
+            piece.color != otherPiece.color) {
+          possibleCaptures |= 1ULL << (rank * 8 + file);
+        }
+      }
+    }
+  } else if (piece.type == PieceType::Rook) {
+    for (file = position[0] + 1; file < 8; file++) {
+
+      uint64_t fileBitboard =
+          1ULL << (position[1] * 8 + file) & allPiecesBitboard;
+
+      if (fileBitboard) {
+        break;
+      }
+
+      possibleCaptures |= 1ULL << (position[1] * 8 + file);
+    }
+
+    for (file = position[0] - 1; file >= 0; file--) {
+
+      uint64_t fileBitboard =
+          1ULL << (position[1] * 8 + file) & allPiecesBitboard;
+
+      if (fileBitboard) {
+        break;
+      }
+
+      possibleCaptures |= 1ULL << (position[1] * 8 + file);
+    }
+
+    for (rank = position[1] - 1; rank >= 0; rank--) {
+
+      uint64_t rankBitboard =
+          1ULL << (rank * 8 + position[0]) & allPiecesBitboard;
+
+      if (rankBitboard) {
+        break;
+      }
+
+      possibleCaptures |= 1ULL << (rank * 8 + position[0]);
+    }
+
+    for (rank = position[1] + 1; rank < 8; rank++) {
+
+      uint64_t rankBitboard =
+          1ULL << (rank * 8 + position[0]) & allPiecesBitboard;
+
+      if (rankBitboard) {
+        break;
+      }
+
+      possibleCaptures |= 1ULL << (rank * 8 + position[0]);
+    }
+
+  } else if (piece.type == PieceType::Knight) {
+    if (file + 2 < 8 && rank + 1 < 8) {
+      possibleCaptures |= 1ULL << ((rank + 1) * 8 + file + 2);
+    }
+
+    if (file - 2 >= 0 && rank + 1 < 8) {
+      possibleCaptures |= 1ULL << ((rank + 1) * 8 + file - 2);
+    }
+
+    if (file + 2 < 8 && rank - 1 >= 0) {
+      possibleCaptures |= 1ULL << ((rank - 1) * 8 + file + 2);
+    }
+
+    if (file - 2 >= 0 && rank - 1 >= 0) {
+      possibleCaptures |= 1ULL << ((rank - 1) * 8 + file - 2);
+    }
+
+    if (file + 1 < 8 && rank + 2 < 8) {
+      possibleCaptures |= 1ULL << ((rank + 2) * 8 + file + 1);
+    }
+
+    if (file + 1 < 8 && rank - 2 >= 0) {
+      possibleCaptures |= 1ULL << ((rank - 2) * 8 + file + 1);
+    }
+
+    if (file - 1 >= 0 && rank + 2 < 8) {
+      possibleCaptures |= 1ULL << ((rank + 2) * 8 + file - 1);
+    }
+
+    if (file - 1 >= 0 && rank - 2 >= 0) {
+      possibleCaptures |= 1ULL << ((rank - 2) * 8 + file - 1);
+    }
+  } else if (piece.type == PieceType::Bishop) {
+    rank = position[1] + 1;
+    file = position[0] + 1;
+
+    while (rank < 8 && file < 8) {
+      uint64_t squareBitboard = 1ULL << (rank * 8 + file) & allPiecesBitboard;
+
+      if (squareBitboard) {
+        break;
+      }
+
+      possibleCaptures |= 1ULL << (rank * 8 + file);
+
+      rank++;
+      file++;
+    }
+
+    rank = position[1] + 1;
+    file = position[0] - 1;
+
+    while (rank < 8 && file >= 0) {
+      uint64_t squareBitboard = 1ULL << (rank * 8 + file) & allPiecesBitboard;
+
+      if (squareBitboard) {
+        break;
+      }
+
+      possibleCaptures |= 1ULL << (rank * 8 + file);
+
+      rank++;
+      file--;
+    }
+
+    rank = position[1] - 1;
+    file = position[0] + 1;
+
+    while (rank >= 0 && file < 8) {
+      uint64_t squareBitboard = 1ULL << (rank * 8 + file) & allPiecesBitboard;
+
+      if (squareBitboard) {
+        break;
+      }
+
+      possibleCaptures |= 1ULL << (rank * 8 + file);
+
+      rank--;
+      file++;
+    }
+
+    rank = position[1] - 1;
+    file = position[0] - 1;
+
+    while (rank >= 0 && file >= 0) {
+      uint64_t squareBitboard = 1ULL << (rank * 8 + file) & allPiecesBitboard;
+
+      if (squareBitboard) {
+        break;
+      }
+
+      possibleCaptures |= 1ULL << (rank * 8 + file);
+
+      rank--;
+      file--;
+    }
+  }
+
+  else if (piece.type == PieceType::Queen) {
+    rank = position[1] + 1;
+    file = position[0] + 1;
+
+    while (rank < 8 && file < 8) {
+      uint64_t squareBitboard = 1ULL << (rank * 8 + file) & allPiecesBitboard;
+
+      if (squareBitboard) {
+        break;
+      }
+
+      possibleCaptures |= 1ULL << (rank * 8 + file);
+
+      rank++;
+      file++;
+    }
+
+    rank = position[1] + 1;
+    file = position[0] - 1;
+
+    while (rank < 8 && file >= 0) {
+      uint64_t squareBitboard = 1ULL << (rank * 8 + file) & allPiecesBitboard;
+
+      if (squareBitboard) {
+        break;
+      }
+
+      possibleCaptures |= 1ULL << (rank * 8 + file);
+
+      rank++;
+      file--;
+    }
+
+    rank = position[1] - 1;
+    file = position[0] + 1;
+
+    while (rank >= 0 && file < 8) {
+      uint64_t squareBitboard = 1ULL << (rank * 8 + file) & allPiecesBitboard;
+
+      if (squareBitboard) {
+        break;
+      }
+
+      possibleCaptures |= 1ULL << (rank * 8 + file);
+
+      rank--;
+      file++;
+    }
+
+    rank = position[1] - 1;
+    file = position[0] - 1;
+
+    while (rank >= 0 && file >= 0) {
+      uint64_t squareBitboard = 1ULL << (rank * 8 + file) & allPiecesBitboard;
+
+      if (squareBitboard) {
+        break;
+      }
+
+      possibleCaptures |= 1ULL << (rank * 8 + file);
+
+      rank--;
+      file--;
+    }
+
+    for (file = position[0] + 1; file < 8; file++) {
+
+      uint64_t fileBitboard =
+          1ULL << (position[1] * 8 + file) & allPiecesBitboard;
+
+      if (fileBitboard) {
+        break;
+      }
+
+      possibleCaptures |= 1ULL << (position[1] * 8 + file);
+    }
+
+    for (file = position[0] - 1; file >= 0; file--) {
+
+      uint64_t fileBitboard =
+          1ULL << (position[1] * 8 + file) & allPiecesBitboard;
+
+      if (fileBitboard) {
+        break;
+      }
+
+      possibleCaptures |= 1ULL << (position[1] * 8 + file);
+    }
+
+    for (rank = position[1] - 1; rank >= 0; rank--) {
+
+      uint64_t rankBitboard =
+          1ULL << (rank * 8 + position[0]) & allPiecesBitboard;
+
+      if (rankBitboard) {
+        break;
+      }
+
+      possibleCaptures |= 1ULL << (rank * 8 + position[0]);
+    }
+
+    for (rank = position[1] + 1; rank < 8; rank++) {
+
+      uint64_t rankBitboard =
+          1ULL << (rank * 8 + position[0]) & allPiecesBitboard;
+
+      if (rankBitboard) {
+        break;
+      }
+
+      possibleCaptures |= 1ULL << (rank * 8 + position[0]);
+    }
+  } else if (piece.type == PieceType::King) {
+    if (file + 1 < 8) {
+      possibleCaptures |= 1ULL << (rank * 8 + file + 1);
+    }
+
+    if (rank + 1 < 8) {
+      possibleCaptures |= 1ULL << ((rank + 1) * 8 + file);
+    }
+
+    if (file + 1 < 8 && rank + 1 < 8) {
+      possibleCaptures |= 1ULL << ((rank + 1) * 8 + file + 1);
+    }
+
+    if (file - 1 >= 0) {
+      possibleCaptures |= 1ULL << (rank * 8 + file - 1);
+    }
+
+    if (rank - 1 >= 0) {
+      possibleCaptures |= 1ULL << ((rank - 1) * 8 + file);
+    }
+
+    if (rank - 1 >= 0 && file - 1 >= 0) {
+      possibleCaptures |= 1ULL << ((rank - 1) * 8 + file - 1);
+    }
+
+    if (rank + 1 < 8 && file - 1 >= 0) {
+      possibleCaptures |= 1ULL << ((rank + 1) * 8 + file - 1);
+    }
+
+    if (rank - 1 >= 0 && file + 1 < 8) {
+      possibleCaptures |= 1ULL << ((rank - 1) * 8 + file + 1);
+    }
+  }
+
+  return possibleCaptures;
 }
