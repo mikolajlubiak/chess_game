@@ -9,7 +9,8 @@
 
 Texture2D boardTexture;
 std::array<Piece, 12> pieces;
-uint64_t legalMoves = 0;
+uint64_t moves = 0;
+uint64_t captures = 0;
 
 uint64_t allPiecesBitboard;
 uint64_t selectedBitboard = 0;
@@ -57,14 +58,14 @@ void loop() {
           selectedPiece = &piece;
           uint64_t possibleMoves =
               PossibleMoves(selectedBitboard, piece, allPiecesBitboard);
-          legalMoves = LegalMoves(possibleMoves, allPiecesBitboard);
-          legalMoves |= PossibleCaptures(selectedBitboard, piece, pieces);
+          moves = LegalMoves(possibleMoves, allPiecesBitboard);
+          captures = PossibleCaptures(selectedBitboard, piece, pieces);
         }
       }
     } else {
       uint64_t newPosition = 1ULL << (rank * 8 + file);
       if (file >= 0 && file < 8 && rank >= 0 && rank < 8 &&
-          newPosition & legalMoves) {
+          newPosition & (moves | captures)) {
         for (Piece &piece : pieces) {
           if (piece.bitboard & newPosition) {
             piece.bitboard = piece.bitboard & ~newPosition;
@@ -80,7 +81,8 @@ void loop() {
 
       selectedPiece = nullptr;
       selectedBitboard = 0;
-      legalMoves = 0;
+      moves = 0;
+      captures = 0;
     }
   }
 
@@ -98,11 +100,19 @@ void loop() {
         DrawTextureEx(piece.texture, piecePosition, 0, 1.4f, WHITE);
       }
     }
-    if (1ULL << i & legalMoves) {
+
+    if (1ULL << i & moves) {
       Vector2 highlightPosition = {
           squareSize * (i % 8) + boardOffset.x + squareSize / 2,
           squareSize * (i / 8) + boardOffset.y + squareSize / 2};
       DrawCircleV(highlightPosition, 10.0f, GREEN);
+    }
+
+    if (1ULL << i & captures) {
+      Vector2 highlightPosition = {
+          squareSize * (i % 8) + boardOffset.x + squareSize / 2,
+          squareSize * (i / 8) + boardOffset.y + squareSize / 2};
+      DrawCircleV(highlightPosition, 10.0f, ORANGE);
     }
   }
 
