@@ -637,10 +637,19 @@ uint64_t PossibleCaptures(uint64_t bitboard, const Piece &piece,
     file = position[0] + 1;
 
     while (rank < 8 && file < 8) {
-      uint64_t squareBitboard = 1ULL << (rank * 8 + file) & allPiecesBitboard;
+      uint64_t squareBitboard = 1ULL << (rank * 8 + file);
 
-      if (squareBitboard) {
-        possibleCaptures |= squareBitboard;
+      if (squareBitboard & allPiecesBitboard) {
+        for (const Piece &otherPiece : pieces) {
+          if (piece.color == otherPiece.color) {
+            continue;
+          }
+
+          if (squareBitboard & otherPiece.bitboard) {
+            possibleCaptures |= squareBitboard;
+          }
+        }
+
         break;
       }
 
@@ -652,10 +661,19 @@ uint64_t PossibleCaptures(uint64_t bitboard, const Piece &piece,
     file = position[0] - 1;
 
     while (rank < 8 && file >= 0) {
-      uint64_t squareBitboard = 1ULL << (rank * 8 + file) & allPiecesBitboard;
+      uint64_t squareBitboard = 1ULL << (rank * 8 + file);
 
-      if (squareBitboard) {
-        possibleCaptures |= squareBitboard;
+      if (squareBitboard & allPiecesBitboard) {
+        for (const Piece &otherPiece : pieces) {
+          if (piece.color == otherPiece.color) {
+            continue;
+          }
+
+          if (squareBitboard & otherPiece.bitboard) {
+            possibleCaptures |= squareBitboard;
+          }
+        }
+
         break;
       }
 
@@ -667,10 +685,19 @@ uint64_t PossibleCaptures(uint64_t bitboard, const Piece &piece,
     file = position[0] + 1;
 
     while (rank >= 0 && file < 8) {
-      uint64_t squareBitboard = 1ULL << (rank * 8 + file) & allPiecesBitboard;
+      uint64_t squareBitboard = 1ULL << (rank * 8 + file);
 
-      if (squareBitboard) {
-        possibleCaptures |= squareBitboard;
+      if (squareBitboard & allPiecesBitboard) {
+        for (const Piece &otherPiece : pieces) {
+          if (piece.color == otherPiece.color) {
+            continue;
+          }
+
+          if (squareBitboard & otherPiece.bitboard) {
+            possibleCaptures |= squareBitboard;
+          }
+        }
+
         break;
       }
 
@@ -682,19 +709,26 @@ uint64_t PossibleCaptures(uint64_t bitboard, const Piece &piece,
     file = position[0] - 1;
 
     while (rank >= 0 && file >= 0) {
-      uint64_t squareBitboard = 1ULL << (rank * 8 + file) & allPiecesBitboard;
+      uint64_t squareBitboard = 1ULL << (rank * 8 + file);
 
-      if (squareBitboard) {
-        possibleCaptures |= squareBitboard;
+      if (squareBitboard & allPiecesBitboard) {
+        for (const Piece &otherPiece : pieces) {
+          if (piece.color == otherPiece.color) {
+            continue;
+          }
+
+          if (squareBitboard & otherPiece.bitboard) {
+            possibleCaptures |= squareBitboard;
+          }
+        }
+
         break;
       }
 
       rank--;
       file--;
     }
-  }
-
-  else if (piece.type == PieceType::Queen) {
+  } else if (piece.type == PieceType::Queen) {
     rank = position[1] + 1;
     file = position[0] + 1;
 
