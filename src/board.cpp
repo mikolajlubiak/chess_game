@@ -168,14 +168,14 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
 
   } else if (piece.type == PieceType::Knight) {
     if (file + 2 < 8 && rank + 1 < 8) {
-      int bitboard = 1ULL << ((rank + 1) * 8 + file + 2);
+      uint64_t bitboard = 1ULL << ((rank + 1) * 8 + file + 2);
       if (bitboard & ~allPiecesBitboard) {
         possibleMoves |= bitboard;
       }
     }
 
     if (file - 2 >= 0 && rank + 1 < 8) {
-      int bitboard = 1ULL << ((rank + 1) * 8 + file - 2);
+      uint64_t bitboard = 1ULL << ((rank + 1) * 8 + file - 2);
       if (bitboard & ~allPiecesBitboard) {
         possibleMoves |= bitboard;
       }
@@ -205,7 +205,7 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
     if (file + 1 < 8 && rank - 2 >= 0) {
       uint64_t bitboard = 1ULL << ((rank - 2) * 8 + file + 1);
       if (bitboard & ~allPiecesBitboard) {
-        possibleMoves |= 1ULL << bitboard;
+        possibleMoves |= bitboard;
       }
     }
 
