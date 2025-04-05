@@ -1,6 +1,8 @@
 #pragma once
 
-#include <bits/stdc++.h>
+#include <array>
+#include <cstdint>
+
 #include <raylib.h>
 
 enum PieceType {

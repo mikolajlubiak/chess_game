@@ -1,5 +1,7 @@
 #include "helper.hpp"
 
+#include <iostream>
+
 void PrintBitboard(uint64_t bitboard) {
   std::cout << "\n\n\n";
   for (uint8_t rank = 0; rank < 8; rank++) {

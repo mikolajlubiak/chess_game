@@ -51,10 +51,11 @@ file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS src/*.hpp)
 enable_cxx_compiler_flag_if_supported("-Wall")
 enable_cxx_compiler_flag_if_supported("-Wextra")
 enable_cxx_compiler_flag_if_supported("-pedantic")
+enable_cxx_compiler_flag_if_supported("-O3")
 
 # Make proper web build
 if(EMSCRIPTEN)
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s USE_GLFW=3 -s ASSERTIONS=1 -s WASM=1 -s ASYNCIFY -s GL_ENABLE_GET_PROC_ADDRESS=1")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s USE_GLFW=3 -s WASM=1 --preload-file assets")
   set(CMAKE_EXECUTABLE_SUFFIX ".html")
 endif()
 
