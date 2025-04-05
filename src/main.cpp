@@ -18,7 +18,7 @@ Piece *selectedPiece = nullptr;
 void loop();
 
 int main() {
-  InitWindow(1280, 700, "Chess");
+  InitWindow(700, 700, "Chess");
   boardTexture = LoadTexture("assets/board.jpg");
   pieces = InitBoard();
   allPiecesBitboard = AllPiecesBitboard(pieces);
