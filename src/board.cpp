@@ -882,36 +882,66 @@ uint64_t PossibleCaptures(uint64_t bitboard, const Piece &piece,
     }
 
   } else if (piece.type == PieceType::King) {
-    if (file + 1 < 8) {
-      possibleCaptures |= 1ULL << (rank * 8 + file + 1);
-    }
+    for (const Piece &otherPiece : pieces) {
+      if (piece.color == otherPiece.color) {
+        continue;
+      }
 
-    if (rank + 1 < 8) {
-      possibleCaptures |= 1ULL << ((rank + 1) * 8 + file);
-    }
+      if (file + 1 < 8) {
+        uint64_t bitboard = 1ULL << (rank * 8 + file + 1);
+        if (bitboard & otherPiece.bitboard) {
+          possibleCaptures |= bitboard;
+        }
+      }
 
-    if (file + 1 < 8 && rank + 1 < 8) {
-      possibleCaptures |= 1ULL << ((rank + 1) * 8 + file + 1);
-    }
+      if (rank + 1 < 8) {
+        uint64_t bitboard = 1ULL << ((rank + 1) * 8 + file);
+        if (bitboard & otherPiece.bitboard) {
+          possibleCaptures |= bitboard;
+        }
+      }
 
-    if (file - 1 >= 0) {
-      possibleCaptures |= 1ULL << (rank * 8 + file - 1);
-    }
+      if (file + 1 < 8 && rank + 1 < 8) {
+        uint64_t bitboard = 1ULL << ((rank + 1) * 8 + file + 1);
+        if (bitboard & otherPiece.bitboard) {
+          possibleCaptures |= bitboard;
+        }
+      }
 
-    if (rank - 1 >= 0) {
-      possibleCaptures |= 1ULL << ((rank - 1) * 8 + file);
-    }
+      if (file - 1 >= 0) {
+        uint64_t bitboard = 1ULL << (rank * 8 + file - 1);
+        if (bitboard & otherPiece.bitboard) {
+          possibleCaptures |= bitboard;
+        }
+      }
 
-    if (rank - 1 >= 0 && file - 1 >= 0) {
-      possibleCaptures |= 1ULL << ((rank - 1) * 8 + file - 1);
-    }
+      if (rank - 1 >= 0) {
+        uint64_t bitboard = 1ULL << ((rank - 1) * 8 + file);
+        if (bitboard & otherPiece.bitboard) {
+          possibleCaptures |= bitboard;
+        }
+      }
 
-    if (rank + 1 < 8 && file - 1 >= 0) {
-      possibleCaptures |= 1ULL << ((rank + 1) * 8 + file - 1);
-    }
+      if (rank - 1 >= 0 && file - 1 >= 0) {
+        uint64_t bitboard = 1ULL << ((rank - 1) * 8 + file - 1);
+        if (bitboard & otherPiece.bitboard) {
+          possibleCaptures |= bitboard;
+        }
+      }
 
-    if (rank - 1 >= 0 && file + 1 < 8) {
-      possibleCaptures |= 1ULL << ((rank - 1) * 8 + file + 1);
+      if (rank + 1 < 8 && file - 1 >= 0) {
+        uint64_t bitboard = 1ULL << ((rank + 1) * 8 + file - 1);
+        if (bitboard & otherPiece.bitboard) {
+          possibleCaptures |= bitboard;
+        }
+      }
+
+      if (rank - 1 >= 0 && file + 1 < 8) {
+        uint64_t bitboard = 1ULL << ((rank - 1) * 8 + file + 1);
+        if (bitboard & otherPiece.bitboard) {
+          possibleCaptures |= bitboard;
+        }
+      }
     }
   }
 
