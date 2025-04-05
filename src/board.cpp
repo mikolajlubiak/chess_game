@@ -168,35 +168,59 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
 
   } else if (piece.type == PieceType::Knight) {
     if (file + 2 < 8 && rank + 1 < 8) {
-      possibleMoves |= 1ULL << ((rank + 1) * 8 + file + 2);
+      int bitboard = 1ULL << ((rank + 1) * 8 + file + 2);
+      if (bitboard & ~allPiecesBitboard) {
+        possibleMoves |= bitboard;
+      }
     }
 
     if (file - 2 >= 0 && rank + 1 < 8) {
-      possibleMoves |= 1ULL << ((rank + 1) * 8 + file - 2);
+      int bitboard = 1ULL << ((rank + 1) * 8 + file - 2);
+      if (bitboard & ~allPiecesBitboard) {
+        possibleMoves |= bitboard;
+      }
     }
 
     if (file + 2 < 8 && rank - 1 >= 0) {
-      possibleMoves |= 1ULL << ((rank - 1) * 8 + file + 2);
+      uint64_t bitboard = 1ULL << ((rank - 1) * 8 + file + 2);
+      if (bitboard & ~allPiecesBitboard) {
+        possibleMoves |= bitboard;
+      }
     }
 
     if (file - 2 >= 0 && rank - 1 >= 0) {
-      possibleMoves |= 1ULL << ((rank - 1) * 8 + file - 2);
+      uint64_t bitboard = 1ULL << ((rank - 1) * 8 + file - 2);
+      if (bitboard & ~allPiecesBitboard) {
+        possibleMoves |= bitboard;
+      }
     }
 
     if (file + 1 < 8 && rank + 2 < 8) {
-      possibleMoves |= 1ULL << ((rank + 2) * 8 + file + 1);
+      uint64_t bitboard = 1ULL << ((rank + 2) * 8 + file + 1);
+      if (bitboard & ~allPiecesBitboard) {
+        possibleMoves |= bitboard;
+      }
     }
 
     if (file + 1 < 8 && rank - 2 >= 0) {
-      possibleMoves |= 1ULL << ((rank - 2) * 8 + file + 1);
+      uint64_t bitboard = 1ULL << ((rank - 2) * 8 + file + 1);
+      if (bitboard & ~allPiecesBitboard) {
+        possibleMoves |= 1ULL << bitboard;
+      }
     }
 
     if (file - 1 >= 0 && rank + 2 < 8) {
-      possibleMoves |= 1ULL << ((rank + 2) * 8 + file - 1);
+      uint64_t bitboard = 1ULL << ((rank + 2) * 8 + file - 1);
+      if (bitboard & ~allPiecesBitboard) {
+        possibleMoves |= bitboard;
+      }
     }
 
     if (file - 1 >= 0 && rank - 2 >= 0) {
-      possibleMoves |= 1ULL << ((rank - 2) * 8 + file - 1);
+      uint64_t bitboard = 1ULL << ((rank - 2) * 8 + file - 1);
+      if (bitboard & ~allPiecesBitboard) {
+        possibleMoves |= bitboard;
+      }
     }
   } else if (piece.type == PieceType::Bishop) {
     rank = position[1] + 1;
@@ -477,8 +501,9 @@ uint64_t PossibleCaptures(uint64_t bitboard, const Piece &piece,
       }
     }
 
-    if (file + 2 < 8) {
-      file += 2;
+    file = position[0];
+    if (file + 1 < 8) {
+      file++;
     }
 
     if (1ULL << (rank * 8 + file) & allPiecesBitboard) {
@@ -546,35 +571,59 @@ uint64_t PossibleCaptures(uint64_t bitboard, const Piece &piece,
 
   } else if (piece.type == PieceType::Knight) {
     if (file + 2 < 8 && rank + 1 < 8) {
-      possibleCaptures |= 1ULL << ((rank + 1) * 8 + file + 2);
+      uint64_t bitboard = ((rank + 1) * 8 + file + 2);
+      if (!(bitboard & allPiecesBitboard)) {
+        possibleCaptures |= 1ULL << bitboard;
+      }
     }
 
     if (file - 2 >= 0 && rank + 1 < 8) {
-      possibleCaptures |= 1ULL << ((rank + 1) * 8 + file - 2);
+      uint64_t bitboard = ((rank + 1) * 8 + file - 2);
+      if (!(bitboard & allPiecesBitboard)) {
+        possibleCaptures |= 1ULL << bitboard;
+      }
     }
 
     if (file + 2 < 8 && rank - 1 >= 0) {
-      possibleCaptures |= 1ULL << ((rank - 1) * 8 + file + 2);
+      uint64_t bitboard = ((rank - 1) * 8 + file + 2);
+      if (!(bitboard & allPiecesBitboard)) {
+        possibleCaptures |= 1ULL << bitboard;
+      }
     }
 
     if (file - 2 >= 0 && rank - 1 >= 0) {
-      possibleCaptures |= 1ULL << ((rank - 1) * 8 + file - 2);
+      uint64_t bitboard = ((rank - 1) * 8 + file - 2);
+      if (!(bitboard & allPiecesBitboard)) {
+        possibleCaptures |= 1ULL << bitboard;
+      }
     }
 
     if (file + 1 < 8 && rank + 2 < 8) {
-      possibleCaptures |= 1ULL << ((rank + 2) * 8 + file + 1);
+      uint64_t bitboard = ((rank + 2) * 8 + file + 1);
+      if (!(bitboard & allPiecesBitboard)) {
+        possibleCaptures |= 1ULL << bitboard;
+      }
     }
 
     if (file + 1 < 8 && rank - 2 >= 0) {
-      possibleCaptures |= 1ULL << ((rank - 2) * 8 + file + 1);
+      uint64_t bitboard = ((rank - 2) * 8 + file + 1);
+      if (!(bitboard & allPiecesBitboard)) {
+        possibleCaptures |= 1ULL << bitboard;
+      }
     }
 
     if (file - 1 >= 0 && rank + 2 < 8) {
-      possibleCaptures |= 1ULL << ((rank + 2) * 8 + file - 1);
+      uint64_t bitboard = ((rank + 2) * 8 + file - 1);
+      if (!(bitboard & allPiecesBitboard)) {
+        possibleCaptures |= 1ULL << bitboard;
+      }
     }
 
     if (file - 1 >= 0 && rank - 2 >= 0) {
-      possibleCaptures |= 1ULL << ((rank - 2) * 8 + file - 1);
+      uint64_t bitboard = ((rank - 2) * 8 + file - 1);
+      if (!(bitboard & allPiecesBitboard)) {
+        possibleCaptures |= 1ULL << bitboard;
+      }
     }
   } else if (piece.type == PieceType::Bishop) {
     rank = position[1] + 1;
@@ -584,10 +633,9 @@ uint64_t PossibleCaptures(uint64_t bitboard, const Piece &piece,
       uint64_t squareBitboard = 1ULL << (rank * 8 + file) & allPiecesBitboard;
 
       if (squareBitboard) {
+        possibleCaptures |= squareBitboard;
         break;
       }
-
-      possibleCaptures |= 1ULL << (rank * 8 + file);
 
       rank++;
       file++;
@@ -600,10 +648,9 @@ uint64_t PossibleCaptures(uint64_t bitboard, const Piece &piece,
       uint64_t squareBitboard = 1ULL << (rank * 8 + file) & allPiecesBitboard;
 
       if (squareBitboard) {
+        possibleCaptures |= squareBitboard;
         break;
       }
-
-      possibleCaptures |= 1ULL << (rank * 8 + file);
 
       rank++;
       file--;
@@ -616,10 +663,9 @@ uint64_t PossibleCaptures(uint64_t bitboard, const Piece &piece,
       uint64_t squareBitboard = 1ULL << (rank * 8 + file) & allPiecesBitboard;
 
       if (squareBitboard) {
+        possibleCaptures |= squareBitboard;
         break;
       }
-
-      possibleCaptures |= 1ULL << (rank * 8 + file);
 
       rank--;
       file++;
@@ -632,10 +678,9 @@ uint64_t PossibleCaptures(uint64_t bitboard, const Piece &piece,
       uint64_t squareBitboard = 1ULL << (rank * 8 + file) & allPiecesBitboard;
 
       if (squareBitboard) {
+        possibleCaptures |= squareBitboard;
         break;
       }
-
-      possibleCaptures |= 1ULL << (rank * 8 + file);
 
       rank--;
       file--;
