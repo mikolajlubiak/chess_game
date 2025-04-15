@@ -4,21 +4,23 @@
 #endif
 
 #include <cstdlib>
-#include <iostream>
 #include <raylib.h>
 
 #include "board.hpp"
 
 Texture2D boardTexture;
 std::array<Piece, 12> pieces;
+
 uint64_t moves = 0;
 uint64_t captures = 0;
-
 uint64_t allPiecesBitboard;
 uint64_t selectedBitboard = 0;
 uint64_t enPassantBitboard = 0;
 uint64_t enPassantedBitboard = 0;
+
 Piece *selectedPiece = nullptr;
+
+PieceColor colorsTurn = PieceColor::White;
 
 void loop();
 
@@ -59,12 +61,14 @@ void loop() {
 
       for (Piece &piece : pieces) {
         if (selectedBitboard & piece.bitboard) {
-          selectedPiece = &piece;
-          uint64_t possibleMoves =
-              PossibleMoves(selectedBitboard, piece, allPiecesBitboard);
-          moves = LegalMoves(possibleMoves, allPiecesBitboard);
-          captures = PossibleCaptures(selectedBitboard, piece, pieces,
-                                      enPassantBitboard);
+          if (piece.color == colorsTurn) {
+            selectedPiece = &piece;
+            uint64_t possibleMoves =
+                PossibleMoves(selectedBitboard, piece, allPiecesBitboard);
+            moves = LegalMoves(possibleMoves, allPiecesBitboard);
+            captures = PossibleCaptures(selectedBitboard, piece, pieces,
+                                        enPassantBitboard);
+          }
         }
       }
     } else {
@@ -114,6 +118,12 @@ void loop() {
         selectedPiece->firstMoveBitboard =
             (selectedPiece->firstMoveBitboard & ~selectedBitboard);
         allPiecesBitboard = AllPiecesBitboard(pieces);
+
+        if (colorsTurn == PieceColor::White) {
+          colorsTurn = PieceColor::Black;
+        } else {
+          colorsTurn = PieceColor::White;
+        }
       }
 
       selectedPiece = nullptr;
