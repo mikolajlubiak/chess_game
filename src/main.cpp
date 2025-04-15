@@ -1,8 +1,10 @@
+#include "helper.hpp"
 #if defined(PLATFORM_WEB)
 #include <emscripten/emscripten.h>
 #endif
 
 #include <cstdlib>
+#include <iostream>
 #include <raylib.h>
 
 #include "board.hpp"
@@ -14,6 +16,8 @@ uint64_t captures = 0;
 
 uint64_t allPiecesBitboard;
 uint64_t selectedBitboard = 0;
+uint64_t enPassantBitboard = 0;
+uint64_t enPassantedBitboard = 0;
 Piece *selectedPiece = nullptr;
 
 void loop();
@@ -59,21 +63,54 @@ void loop() {
           uint64_t possibleMoves =
               PossibleMoves(selectedBitboard, piece, allPiecesBitboard);
           moves = LegalMoves(possibleMoves, allPiecesBitboard);
-          captures = PossibleCaptures(selectedBitboard, piece, pieces);
+          captures = PossibleCaptures(selectedBitboard, piece, pieces,
+                                      enPassantBitboard);
         }
       }
     } else {
-      uint64_t newPosition = 1ULL << (rank * 8 + file);
+      uint64_t newPositionBitboard = 1ULL << (rank * 8 + file);
+
       if (file >= 0 && file < 8 && rank >= 0 && rank < 8 &&
-          newPosition & (moves | captures)) {
+          newPositionBitboard & (moves | captures)) {
+
+        if (newPositionBitboard & enPassantBitboard) {
+          for (Piece &piece : pieces) {
+            if (piece.bitboard & enPassantedBitboard) {
+              piece.bitboard = piece.bitboard & ~enPassantedBitboard;
+            }
+          }
+        }
+
+        enPassantBitboard = 0;
+
         for (Piece &piece : pieces) {
-          if (piece.bitboard & newPosition) {
-            piece.bitboard = piece.bitboard & ~newPosition;
+          if (piece.bitboard & newPositionBitboard) {
+            piece.bitboard = piece.bitboard & ~newPositionBitboard;
+          }
+        }
+
+        if (selectedPiece->type == PieceType::Pawn) {
+          int8_t diff;
+          if (selectedPiece->color == PieceColor::White) {
+            diff = -1;
+          } else {
+            diff = 1;
+          }
+
+          std::array<int8_t, 2> selectedPosition =
+              PositionFromBitboard(selectedBitboard);
+          std::array<int8_t, 2> newPosition =
+              PositionFromBitboard(newPositionBitboard);
+
+          if (newPosition[1] == selectedPosition[1] + diff * 2) {
+            enPassantBitboard = 1ULL << ((selectedPosition[1] + diff) * 8 +
+                                         selectedPosition[0]);
+            enPassantedBitboard = newPositionBitboard;
           }
         }
 
         selectedPiece->bitboard =
-            (selectedPiece->bitboard & ~selectedBitboard) | newPosition;
+            (selectedPiece->bitboard & ~selectedBitboard) | newPositionBitboard;
         selectedPiece->firstMoveBitboard =
             (selectedPiece->firstMoveBitboard & ~selectedBitboard);
         allPiecesBitboard = AllPiecesBitboard(pieces);

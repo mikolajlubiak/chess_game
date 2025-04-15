@@ -1,6 +1,6 @@
 #include "board.hpp"
 
-std::array<Piece, 12> InitBoard() {
+std::array<Piece, PIECES_COUNT> InitBoard() {
   Piece blackPawn;
   blackPawn.bitboard = 1ULL << 8 | 1ULL << 9 | 1ULL << 10 | 1ULL << 11 |
                        1ULL << 12 | 1ULL << 13 | 1ULL << 14 | 1ULL << 15;
@@ -448,7 +448,7 @@ std::array<int8_t, 2> PositionFromBitboard(uint64_t bitboard) {
   return {0, 0};
 }
 
-uint64_t AllPiecesBitboard(const std::array<Piece, 12> &pieces) {
+uint64_t AllPiecesBitboard(const std::array<Piece, PIECES_COUNT> &pieces) {
   uint64_t bitboard = 0;
 
   for (const Piece &piece : pieces) {
@@ -464,7 +464,8 @@ uint64_t LegalMoves(uint64_t possibleMovesBitboard,
 }
 
 uint64_t PossibleCaptures(uint64_t bitboard, const Piece &piece,
-                          const std::array<Piece, 12> &pieces) {
+                          const std::array<Piece, PIECES_COUNT> &pieces,
+                          uint64_t enPassantBitboard) {
   uint64_t possibleCaptures = 0;
   std::array<int8_t, 2> position = PositionFromBitboard(bitboard);
   uint64_t allPiecesBitboard = AllPiecesBitboard(pieces);
@@ -499,6 +500,9 @@ uint64_t PossibleCaptures(uint64_t bitboard, const Piece &piece,
         }
       }
     }
+    if (1ULL << (rank * 8 + file) & enPassantBitboard) {
+      possibleCaptures |= 1ULL << (rank * 8 + file);
+    }
 
     file = position[0];
     if (file + 1 < 8) {
@@ -512,6 +516,9 @@ uint64_t PossibleCaptures(uint64_t bitboard, const Piece &piece,
           possibleCaptures |= 1ULL << (rank * 8 + file);
         }
       }
+    }
+    if (1ULL << (rank * 8 + file) & enPassantBitboard) {
+      possibleCaptures |= 1ULL << (rank * 8 + file);
     }
   } else if (piece.type == PieceType::Rook) {
     for (file = position[0] + 1; file < 8; file++) {
