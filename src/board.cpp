@@ -1076,6 +1076,14 @@ Piece &GetPieceAt(uint64_t bitboard, std::array<Piece, PIECES_COUNT> &pieces) {
 uint8_t GameOver(const std::array<Piece, PIECES_COUNT> &pieces) {
   for (auto &piece : pieces) {
     if (piece.type == PieceType::King) {
+      if (piece.bitboard == 0) {
+        if (piece.color == PieceColor::White) {
+          return 1;
+        } else {
+          return 2;
+        }
+      }
+
       uint64_t allPiecesBitboard = AllPiecesBitboard(pieces);
       if ((PossibleMoves(piece.bitboard, piece, allPiecesBitboard, pieces) &
            ~allPiecesBitboard) == 0) {

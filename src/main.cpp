@@ -1,4 +1,5 @@
 #include "helper.hpp"
+#include <string>
 #if defined(PLATFORM_WEB)
 #include <emscripten/emscripten.h>
 #endif
@@ -19,6 +20,9 @@ uint64_t enPassantBitboard = 0;
 uint64_t enPassantedBitboard = 0;
 uint64_t checkmateBitboard = 0;
 uint8_t gameOver = 0;
+std::string status = "";
+Vector2 textSize;
+Vector2 textPosition;
 
 Piece *selectedPiece = nullptr;
 
@@ -182,6 +186,15 @@ void loop() {
 
   // Rendering
   if (gameOver) {
+    textSize = MeasureTextEx(GetFontDefault(), status.c_str(), 100.0f, 1.0f);
+    textPosition = {(width - textSize.x) / 2, (height - textSize.y) / 2};
+
+    if (gameOver == 1) {
+      status = "Black Wins";
+    } else {
+      status = "White Wins";
+    }
+
     for (auto &piece : pieces) {
       if (piece.type == PieceType::King) {
         PieceColor checkmatedColor;
@@ -230,6 +243,11 @@ void loop() {
           squareSize * (i % 8) + boardOffset.x + squareSize / 2,
           squareSize * (i / 8) + boardOffset.y + squareSize / 2};
       DrawCircleV(highlightPosition, 10.0f, RED);
+    }
+
+    if (status != "") {
+      DrawTextEx(GetFontDefault(), status.c_str(), textPosition, 100.0f, 1.0f,
+                 BLACK);
     }
   }
 
