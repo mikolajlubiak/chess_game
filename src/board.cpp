@@ -526,35 +526,35 @@ uint64_t PossibleCaptures(uint64_t bitboard, const Piece &piece,
 
     if (file - 1 >= 0) {
       file--;
-    }
 
-    if (1ULL << (rank * 8 + file) & allPiecesBitboard) {
-      for (const Piece &otherPiece : pieces) {
-        if (1ULL << (rank * 8 + file) & otherPiece.bitboard &&
-            piece.color != otherPiece.color) {
-          possibleCaptures |= 1ULL << (rank * 8 + file);
+      if (1ULL << (rank * 8 + file) & allPiecesBitboard) {
+        for (const Piece &otherPiece : pieces) {
+          if (1ULL << (rank * 8 + file) & otherPiece.bitboard &&
+              piece.color != otherPiece.color) {
+            possibleCaptures |= 1ULL << (rank * 8 + file);
+          }
         }
       }
-    }
-    if (1ULL << (rank * 8 + file) & enPassantBitboard) {
-      possibleCaptures |= 1ULL << (rank * 8 + file);
+      if (1ULL << (rank * 8 + file) & enPassantBitboard) {
+        possibleCaptures |= 1ULL << (rank * 8 + file);
+      }
     }
 
     file = position[0];
     if (file + 1 < 8) {
       file++;
-    }
 
-    if (1ULL << (rank * 8 + file) & allPiecesBitboard) {
-      for (const Piece &otherPiece : pieces) {
-        if (1ULL << (rank * 8 + file) & otherPiece.bitboard &&
-            piece.color != otherPiece.color) {
-          possibleCaptures |= 1ULL << (rank * 8 + file);
+      if (1ULL << (rank * 8 + file) & allPiecesBitboard) {
+        for (const Piece &otherPiece : pieces) {
+          if (1ULL << (rank * 8 + file) & otherPiece.bitboard &&
+              piece.color != otherPiece.color) {
+            possibleCaptures |= 1ULL << (rank * 8 + file);
+          }
         }
       }
-    }
-    if (1ULL << (rank * 8 + file) & enPassantBitboard) {
-      possibleCaptures |= 1ULL << (rank * 8 + file);
+      if (1ULL << (rank * 8 + file) & enPassantBitboard) {
+        possibleCaptures |= 1ULL << (rank * 8 + file);
+      }
     }
   } else if (piece.type == PieceType::Rook) {
     for (file = position[0] + 1; file < 8; file++) {
