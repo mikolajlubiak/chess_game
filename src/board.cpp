@@ -419,7 +419,26 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
           rookBitboard, const_cast<std::array<Piece, PIECES_COUNT> &>(pieces));
 
       if (leftRook.firstMoveBitboard & rookBitboard) {
-        possibleMoves |= 1ULL << (rank * 8 + file - 2);
+        if (!((1ULL << (rank * 8 + file - 2) | 1ULL << (rank * 8 + file - 1)) &
+              allPiecesBitboard)) {
+          uint64_t captures = 0;
+          for (const auto &otherPiece : pieces) {
+            if (otherPiece.color != piece.color) {
+              for (uint8_t i = 0; i < 64; i++) {
+                if (1ULL << i & otherPiece.bitboard) {
+                  captures |= PossibleMoves(1ULL << i, otherPiece,
+                                            allPiecesBitboard, pieces);
+                }
+              }
+            }
+          }
+
+          if (!((1ULL << (rank * 8 + file - 2) | 1ULL
+                                                     << (rank * 8 + file - 1)) &
+                captures)) {
+            possibleMoves |= 1ULL << (rank * 8 + file + 2);
+          }
+        }
       }
 
       if (piece.color == PieceColor::White) {
@@ -432,7 +451,26 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
           rookBitboard, const_cast<std::array<Piece, PIECES_COUNT> &>(pieces));
 
       if (rightRook.firstMoveBitboard & rookBitboard) {
-        possibleMoves |= 1ULL << (rank * 8 + file + 2);
+        if (!((1ULL << (rank * 8 + file + 2) | 1ULL << (rank * 8 + file + 1)) &
+              allPiecesBitboard)) {
+          uint64_t captures = 0;
+          for (const auto &otherPiece : pieces) {
+            if (otherPiece.color != piece.color) {
+              for (uint8_t i = 0; i < 64; i++) {
+                if (1ULL << i & otherPiece.bitboard) {
+                  captures |= PossibleMoves(1ULL << i, otherPiece,
+                                            allPiecesBitboard, pieces);
+                }
+              }
+            }
+          }
+
+          if (!((1ULL << (rank * 8 + file + 2) | 1ULL
+                                                     << (rank * 8 + file + 1)) &
+                captures)) {
+            possibleMoves |= 1ULL << (rank * 8 + file + 2);
+          }
+        }
       }
     }
 
