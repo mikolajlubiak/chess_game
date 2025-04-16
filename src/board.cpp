@@ -1,4 +1,5 @@
 #include "board.hpp"
+#include "helper.hpp"
 
 std::array<Piece, PIECES_COUNT> InitBoard() {
   Piece blackPawn;
@@ -11,6 +12,7 @@ std::array<Piece, PIECES_COUNT> InitBoard() {
 
   Piece blackRook;
   blackRook.bitboard = 1ULL << 0 | 1ULL << 7;
+  blackRook.firstMoveBitboard = blackRook.bitboard;
   blackRook.type = PieceType::Rook;
   blackRook.color = PieceColor::Black;
   blackRook.texture = LoadTexture("assets/pieces/bR.svg.png");
@@ -35,6 +37,7 @@ std::array<Piece, PIECES_COUNT> InitBoard() {
 
   Piece blackKing;
   blackKing.bitboard = 1ULL << 4;
+  blackKing.firstMoveBitboard = blackKing.bitboard;
   blackKing.type = PieceType::King;
   blackKing.color = PieceColor::Black;
   blackKing.texture = LoadTexture("assets/pieces/bK.svg.png");
@@ -49,6 +52,7 @@ std::array<Piece, PIECES_COUNT> InitBoard() {
 
   Piece whiteRook;
   whiteRook.bitboard = 1ULL << 56 | 1ULL << 63;
+  whiteRook.firstMoveBitboard = whiteRook.bitboard;
   whiteRook.type = PieceType::Rook;
   whiteRook.color = PieceColor::White;
   whiteRook.texture = LoadTexture("assets/pieces/wR.svg.png");
@@ -73,6 +77,7 @@ std::array<Piece, PIECES_COUNT> InitBoard() {
 
   Piece whiteKing;
   whiteKing.bitboard = 1ULL << 60;
+  whiteKing.firstMoveBitboard = whiteKing.bitboard;
   whiteKing.type = PieceType::King;
   whiteKing.color = PieceColor::White;
   whiteKing.texture = LoadTexture("assets/pieces/wK.svg.png");
@@ -83,7 +88,8 @@ std::array<Piece, PIECES_COUNT> InitBoard() {
 }
 
 uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
-                       uint64_t allPiecesBitboard) {
+                       uint64_t allPiecesBitboard,
+                       const std::array<Piece, PIECES_COUNT> &pieces) {
   uint64_t possibleMoves = 0;
   std::array<int8_t, 2> position = PositionFromBitboard(bitboard);
 
@@ -400,6 +406,36 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
       possibleMoves |= 1ULL << (rank * 8 + position[0]);
     }
   } else if (piece.type == PieceType::King) {
+    if (bitboard & piece.firstMoveBitboard) {
+      uint64_t rookBitboard = 0;
+
+      if (piece.color == PieceColor::White) {
+        rookBitboard = 1ULL << 53;
+      } else {
+        rookBitboard = 1ULL << 0;
+      }
+
+      const Piece &leftRook = GetPieceAt(
+          rookBitboard, const_cast<std::array<Piece, PIECES_COUNT> &>(pieces));
+
+      if (leftRook.firstMoveBitboard & rookBitboard) {
+        possibleMoves |= 1ULL << (rank * 8 + file - 2);
+      }
+
+      if (piece.color == PieceColor::White) {
+        rookBitboard = 1ULL << 63;
+      } else {
+        rookBitboard = 1ULL << 7;
+      }
+
+      const Piece &rightRook = GetPieceAt(
+          rookBitboard, const_cast<std::array<Piece, PIECES_COUNT> &>(pieces));
+
+      if (rightRook.firstMoveBitboard & rookBitboard) {
+        possibleMoves |= 1ULL << (rank * 8 + file + 2);
+      }
+    }
+
     if (file + 1 < 8) {
       possibleMoves |= 1ULL << (rank * 8 + file + 1);
     }
@@ -952,4 +988,12 @@ uint64_t PossibleCaptures(uint64_t bitboard, const Piece &piece,
   }
 
   return possibleCaptures;
+}
+
+Piece &GetPieceAt(uint64_t bitboard, std::array<Piece, PIECES_COUNT> &pieces) {
+  for (auto &piece : pieces) {
+    if (piece.bitboard & bitboard) {
+      return piece;
+    }
+  }
 }
