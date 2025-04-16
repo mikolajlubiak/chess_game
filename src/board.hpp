@@ -47,3 +47,5 @@ uint64_t PossibleCaptures(uint64_t bitboard, const Piece &piece,
                           uint64_t enPassantBitboard);
 
 Piece &GetPieceAt(uint64_t bitboard, std::array<Piece, PIECES_COUNT> &pieces);
+
+uint8_t GameOver(const std::array<Piece, PIECES_COUNT> &pieces);

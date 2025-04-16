@@ -17,6 +17,8 @@ uint64_t allPiecesBitboard;
 uint64_t selectedBitboard = 0;
 uint64_t enPassantBitboard = 0;
 uint64_t enPassantedBitboard = 0;
+uint64_t checkmateBitboard = 0;
+uint8_t gameOver = 0;
 
 Piece *selectedPiece = nullptr;
 
@@ -51,7 +53,7 @@ void loop() {
                          (float)height / 2 - boardTexture.height * scale / 2};
 
   // Input handling
-  if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+  if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !gameOver) {
     Vector2 mousePosition = GetMousePosition();
     int file = (mousePosition.x - boardOffset.x) / squareSize;
     int rank = (mousePosition.y - boardOffset.y) / squareSize;
@@ -167,6 +169,8 @@ void loop() {
         } else {
           colorsTurn = PieceColor::White;
         }
+
+        gameOver = GameOver(pieces);
       }
 
       selectedPiece = nullptr;
@@ -177,6 +181,22 @@ void loop() {
   }
 
   // Rendering
+  if (gameOver) {
+    for (auto &piece : pieces) {
+      if (piece.type == PieceType::King) {
+        PieceColor checkmatedColor;
+        if (gameOver == 1) {
+          checkmatedColor = PieceColor::White;
+        } else {
+          checkmatedColor = PieceColor::Black;
+        }
+        if (piece.color == checkmatedColor) {
+          checkmateBitboard = piece.bitboard;
+        }
+      }
+    }
+  }
+
   BeginDrawing();
 
   ClearBackground(RAYWHITE);
@@ -203,6 +223,13 @@ void loop() {
           squareSize * (i % 8) + boardOffset.x + squareSize / 2,
           squareSize * (i / 8) + boardOffset.y + squareSize / 2};
       DrawCircleV(highlightPosition, 10.0f, ORANGE);
+    }
+
+    if (1ULL << i & checkmateBitboard) {
+      Vector2 highlightPosition = {
+          squareSize * (i % 8) + boardOffset.x + squareSize / 2,
+          squareSize * (i / 8) + boardOffset.y + squareSize / 2};
+      DrawCircleV(highlightPosition, 10.0f, RED);
     }
   }
 
