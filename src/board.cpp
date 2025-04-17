@@ -480,7 +480,7 @@ uint64_t PossibleMoves(uint64_t bitboard, const Piece &piece,
           if (!((1ULL << (rank * 8 + file - 2) | 1ULL
                                                      << (rank * 8 + file - 1)) &
                 captures)) {
-            possibleMoves |= 1ULL << (rank * 8 + file + 2);
+            possibleMoves |= 1ULL << (rank * 8 + file - 2);
           }
         }
       }
