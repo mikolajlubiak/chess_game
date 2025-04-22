@@ -50,5 +50,10 @@ Piece &GetPieceAt(uint64_t bitboard, std::array<Piece, PIECES_COUNT> &pieces);
 
 uint8_t GameOver(const std::array<Piece, PIECES_COUNT> &pieces);
 
-void HandleCastling(Piece &king, uint64_t selectedBitboard, uint64_t newPositionBitboard, std::array<Piece, PIECES_COUNT> &pieces);
-void HandleEnPassant(Piece &pawn, uint64_t selectedBitboard, uint64_t newPositionBitboard, uint64_t &enPassantBitboard, uint64_t &enPassantedBitboard, std::array<Piece, PIECES_COUNT> &pieces);
+void HandleCastling(Piece &king, uint64_t selectedBitboard,
+                    uint64_t newPositionBitboard,
+                    std::array<Piece, PIECES_COUNT> &pieces);
+void HandleEnPassant(Piece &pawn, uint64_t selectedBitboard,
+                     uint64_t newPositionBitboard, uint64_t &enPassantBitboard,
+                     uint64_t &enPassantedBitboard,
+                     std::array<Piece, PIECES_COUNT> &pieces);

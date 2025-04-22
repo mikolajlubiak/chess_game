@@ -83,8 +83,10 @@ void loop() {
       if (file >= 0 && file < 8 && rank >= 0 && rank < 8 &&
           newPositionBitboard & (moves | captures)) {
 
-        HandleCastling(*selectedPiece, selectedBitboard, newPositionBitboard, pieces);
-        HandleEnPassant(*selectedPiece, selectedBitboard, newPositionBitboard, enPassantBitboard, enPassantedBitboard, pieces);
+        HandleCastling(*selectedPiece, selectedBitboard, newPositionBitboard,
+                       pieces);
+        HandleEnPassant(*selectedPiece, selectedBitboard, newPositionBitboard,
+                        enPassantBitboard, enPassantedBitboard, pieces);
 
         for (Piece &piece : pieces) {
           if (piece.bitboard & newPositionBitboard) {
