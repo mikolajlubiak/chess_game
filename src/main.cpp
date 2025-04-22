@@ -224,18 +224,18 @@ void loop() {
       }
     }
 
-    if (1ULL << i & moves) {
-      Vector2 highlightPosition = {
-          squareSize * (i % 8) + boardOffset.x + squareSize / 2,
-          squareSize * (i / 8) + boardOffset.y + squareSize / 2};
-      DrawCircleV(highlightPosition, 10.0f, GREEN);
-    }
-
     if (1ULL << i & captures) {
       Vector2 highlightPosition = {
           squareSize * (i % 8) + boardOffset.x + squareSize / 2,
           squareSize * (i / 8) + boardOffset.y + squareSize / 2};
       DrawCircleV(highlightPosition, 10.0f, ORANGE);
+    }
+
+    if (1ULL << i & moves) {
+      Vector2 highlightPosition = {
+          squareSize * (i % 8) + boardOffset.x + squareSize / 2,
+          squareSize * (i / 8) + boardOffset.y + squareSize / 2};
+      DrawCircleV(highlightPosition, 10.0f, GREEN);
     }
 
     if (1ULL << i & checkmateBitboard) {
